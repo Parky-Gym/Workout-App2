@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Workout Tracker</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 { text-align: center; }
+
+form {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 20px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 14px;
+}
+
+button {
+    grid-column: span 2;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th { background: #f4f4f4; }
+
+.delete {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏋️ Workout Tracker</h1>
+
+<h2>Filter</h2>
+
+<select id="groupFilter">
+    <option value="All">All Muscle Groups</option>
+    <option value="Chest">Chest</option>
+    <option value="Back">Back</option>
+    <option value="Legs">Legs</option>
+    <option value="Shoulders">Shoulders</option>
+    <option value="Arms">Arms</option>
+    <option value="Abs">Abs</option>
+</select>
+
+<hr>
+
+<h3>Add New Exercise</h3>
+
+<input type="text" id="newExercise" placeholder="Exercise name">
+<select id="newGroup">
+    <option value="Chest">Chest</option>
+    <option value="Back">Back</option>
+    <option value="Legs">Legs</option>
+    <option value="Shoulders">Shoulders</option>
+    <option value="Arms">Arms</option>
+    <option value="Abs">Abs</option>
+</select>
+
+<button onclick="addExercise()">Add Exercise</button>
+
+<hr>
+
+<form id="form">
+    <input type="date" id="date" required>
+
+<select id="exercise"></select>
+   
+</datalist>
+    <input type="number" id="weight" placeholder="Weight" required>
+    <input type="number" id="sets" placeholder="Sets" required>
+    <input type="number" id="reps" placeholder="Reps" required>
+    <button type="submit">Add Workout</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Exercise</th>
+            <th>Weight</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="list"></tbody>
+</table>
+
+<script>
+
+
+const form = document.getElementById("form");
+const list = document.getElementById("list");
+
+function render() {
+    list.innerHTML = "";
+
+    workouts.forEach((w, i) => {
+        list.innerHTML += `
+        <tr>
+            <td>${w.date}</td>
+            <td>${w.exercise}</td>
+            <td>${w.weight}</td>
+            <td>${w.sets}</td>
+            <td>${w.reps}</td>
+            <td><button class="delete" onclick="remove(${i})">X</button></td>
+        </tr>`;
+    });
+
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+}
+
+form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    workouts.push({
+        date: date.value,
+        exercise: exercise.value,
+        weight: weight.value,
+        sets: sets.value,
+        reps: reps.value
+    });
+
+    form.reset();
+    render();
+});
+
+function remove(i) {
+    workouts.splice(i, 1);
+    render();
+}
+
+render();
+
+let workouts = JSON.parse(localStorage.getItem("workouts")) || [];
+let exercises = JSON.parse(localStorage.getItem("exercises")) || [
+    { name: "Bench Press", group: "Chest" },
+    { name: "Pendulum Squat", group: "Legs" },
+    { name: "Deadlift", group: "Back" },
+    { name: "Arm Extensions", group: "Shoulders" }
+];
+
+const exerciseSelect = document.getElementById("exercise");
+const groupFilter = document.getElementById("groupFilter");
+
+function saveData() {
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+    localStorage.setItem("exercises", JSON.stringify(exercises));
+}
+function updateExerciseDropdown() { ... }
+groupFilter.addEventListener("change", updateExerciseDropdown);
+</script>
+</body>
+</html>
