@@ -179,6 +179,48 @@ function saveData() {
 }
 function updateExerciseDropdown() { ... }
 groupFilter.addEventListener("change", updateExerciseDropdown);
+function addExercise() { ... }
+function render() {
+    const table = document.getElementById("workoutTable");
+    table.innerHTML = "";
+
+    workouts.forEach((w, index) => {
+        table.innerHTML += `
+        <tr>
+            <td>${w.date}</td>
+            <td>${w.exercise}</td>
+            <td>${w.weight}</td>
+            <td>${w.sets}</td>
+            <td>${w.reps}</td>
+            <td><button onclick="deleteWorkout(${index})">X</button></td>
+        </tr>`;
+    });
+
+    saveData();
+}
+
+function deleteWorkout(index) {
+    workouts.splice(index, 1);
+    render();
+}
+
+document.getElementById("form").addEventListener("submit", e => {
+    e.preventDefault();
+
+    workouts.push({
+        date: date.value,
+        exercise: exercise.value,
+        weight: weight.value,
+        sets: sets.value,
+        reps: reps.value
+    });
+
+    form.reset();
+    render();
+});
+
+updateExerciseDropdown();
+render();
 </script>
 </body>
 </html>
